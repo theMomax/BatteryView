@@ -38,44 +38,6 @@ public extension Battery {
     }
 }
 
-public struct SystemBattery: BatteryView {
-    private static var defaultStyle: AnyBatteryStyle = AnyBatteryStyle(ColoredSFSymbolStyle())
-    
-    @Environment(\.batteryStyle) private var style
-    
-    @State private var configuration: BatteryStyleConfiguration = BatteryStyleConfiguration(level: 0.0, state: .unknown, mode: .normal)
-    
-    private let levelPublisher = NotificationCenter.default.publisher(for: UIDevice.batteryLevelDidChangeNotification)
-    
-    private let statePublisher = NotificationCenter.default.publisher(for: UIDevice.batteryStateDidChangeNotification)
-    
-    private let modePublisher = NotificationCenter.default.publisher(for: Notification.Name.NSProcessInfoPowerStateDidChange)
-    
-    public init() {}
-    
-    public var body: some View {
-        (self.style ?? Self.defaultStyle).makeBody(configuration: configuration)
-            .onAppear {
-                UIDevice.current.isBatteryMonitoringEnabled = true
-                self.loadData()
-            }
-            .onDisappear {
-                UIDevice.current.isBatteryMonitoringEnabled = false
-            }
-            .onReceive(levelPublisher) { (output) in
-                self.loadData()
-            }
-            .onReceive(statePublisher) { (output) in
-                self.loadData()
-            }
-    }
-    
-    private func loadData() {
-        self.configuration = BatteryStyleConfiguration(level: UIDevice.current.batteryLevel, state: BatteryState(UIDevice.current.batteryState), mode: ProcessInfo.processInfo.isLowPowerModeEnabled ? .lowPower : .normal)
-    }
-}
-
-
 
 // MARK: Demo View
 struct BatteryDemo: View {
