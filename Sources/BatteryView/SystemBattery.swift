@@ -8,7 +8,7 @@
 import SwiftUI
 
 public struct SystemBattery: BatteryView {
-    private static var defaultStyle: AnyBatteryStyle = AnyBatteryStyle(ColoredSFSymbolStyle())
+    private static var defaultStyle: AnyBatteryStyle = AnyBatteryStyle(SFSymbolStyle())
     
     @Environment(\.batteryStyle) private var style
     

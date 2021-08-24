@@ -10,7 +10,7 @@ import SwiftUI
 
 /// A `BatteryView` that is based on a `Binding` to `BatteryStyleConfiguration`.
 public struct Battery: BatteryView {
-    private static var defaultStyle: AnyBatteryStyle = AnyBatteryStyle(ColoredSFSymbolStyle())
+    private static var defaultStyle: AnyBatteryStyle = AnyBatteryStyle(SFSymbolStyle())
     
     @Environment(\.batteryStyle) private var style
     
@@ -42,7 +42,7 @@ public extension Battery {
 // MARK: Demo View
 struct BatteryDemo: View {
     @State var level: Float = 1.0
-    @State var state: BatteryState = .unplugged
+    @State var state: BatteryState = .full
     @State var mode: BatteryMode = .normal
     
     var body: some View {
