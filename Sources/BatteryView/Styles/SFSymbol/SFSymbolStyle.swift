@@ -44,6 +44,16 @@ public struct SFSymbolStyle: BatteryStyle {
                 .animation(animation)
                 .offset(x: w * 0.18)
         }
+        .mask(
+            ZStack {
+                Color.white
+                Image(systemName: "battery.100").font(Font.custom("SFUIDisplay-Light", size: 200 * (w/294)))
+                    .foregroundColor(.black)
+            }
+            .compositingGroup()
+            .colorInvert()
+            .luminanceToAlpha()
+        )
         .withBolt(if: configuration.state == .charging || configuration.state == .full, sized: w, colored: color.primary(for: configuration))
     }
 }
@@ -55,18 +65,16 @@ struct ColoredSFSymbolStyle_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             BatteryDemo()
+                .background(Color.white)
         }.batteryStyle(SFSymbolStyle())
         .preferredColorScheme(.light)
         
+        
         Group {
             BatteryDemo()
+                .background(Color.black)
         }.batteryStyle(SFSymbolStyle())
         .preferredColorScheme(.dark)
-        Group {
-            SystemBattery()
-                .padding()
-                .padding()
-        }.batteryStyle(SFSymbolStyle())
         Group {
             VStack {
                 ForEach(1..<8) { i in

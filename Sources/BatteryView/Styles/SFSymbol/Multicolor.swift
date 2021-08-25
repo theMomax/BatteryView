@@ -23,6 +23,10 @@ public struct Multicolor: ColorConfiguration {
     }
     
     public func secondary(for configuration: BatteryStyleConfiguration) -> Color {
+        if configuration.state == .unknown {
+            return .gray
+        }
+        
         switch configuration.mode {
         case .lowPower:
             return .yellow
@@ -39,10 +43,6 @@ public struct Multicolor: ColorConfiguration {
         
         if configuration.level <= self.warningLevel {
             return .red
-        }
-        
-        if configuration.state == .unknown {
-            return .gray
         }
         
         return .primary

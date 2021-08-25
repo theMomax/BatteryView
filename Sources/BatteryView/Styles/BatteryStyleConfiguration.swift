@@ -18,7 +18,7 @@ public struct BatteryStyleConfiguration {
 }
 
 /// `BatteryState` describes the charging state of a battery.
-public enum BatteryState: String {
+public enum BatteryState: String, Equatable {
     case unknown
     case unplugged
     case charging
@@ -26,11 +26,25 @@ public enum BatteryState: String {
 }
 
 /// `BatteryMode` describes the power mode of a battery.
-public enum BatteryMode: String {
+public enum BatteryMode: String, Equatable {
     case normal
     case lowPower = "low power"
 }
 
+public extension Binding where Value == BatteryStyleConfiguration {
+    /// Create a `Binding<BatteryStyleConfiguration>` from `Binding`s to `BatteryStyleConfiguration`'s properties.
+    init(_ level: Binding<Float>, _ state: Binding<BatteryState> = .constant(.unplugged), _ mode: Binding<BatteryMode> = .constant(.normal)) {
+        self = Binding(get: {
+            BatteryStyleConfiguration(level: level.wrappedValue, state: state.wrappedValue, mode: mode.wrappedValue)
+        }, set: { newValue in
+            level.wrappedValue = newValue.level
+            state.wrappedValue = newValue.state
+            mode.wrappedValue = newValue.mode
+        })
+    }
+}
+
+#if os(iOS)
 public extension BatteryState {
     /// Converts from the system's `BatteryState` to this package's
     /// `BatteryState`.
@@ -49,16 +63,4 @@ public extension BatteryState {
         }
     }
 }
-
-public extension Binding where Value == BatteryStyleConfiguration {
-    /// Create a `Binding<BatteryStyleConfiguration>` from `Binding`s to `BatteryStyleConfiguration`'s properties.
-    init(_ level: Binding<Float>, _ state: Binding<BatteryState> = .constant(.unplugged), _ mode: Binding<BatteryMode> = .constant(.normal)) {
-        self = Binding(get: {
-            BatteryStyleConfiguration(level: level.wrappedValue, state: state.wrappedValue, mode: mode.wrappedValue)
-        }, set: { newValue in
-            level.wrappedValue = newValue.level
-            state.wrappedValue = newValue.state
-            mode.wrappedValue = newValue.mode
-        })
-    }
-}
+#endif

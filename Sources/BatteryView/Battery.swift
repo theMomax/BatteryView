@@ -49,18 +49,20 @@ struct BatteryDemo: View {
         VStack {
             HStack {
                 Spacer()
-                Battery(Binding($level, $state, $mode))
+                Battery($level, $state, $mode)
                     .frame(width: 30)
             }
             Spacer()
-            Battery(Binding($level, $state, $mode))
+            Battery($level, $state, $mode)
                 .frame(width: 200)
                 
             Spacer()
+            #if !os(tvOS)
             Text("Level")
             Slider(value: $level, in: 0...1.0)
                 .padding(.bottom)
                 .padding(.bottom)
+            #endif
             Text("State")
             Picker("State", selection: $state) {
                 ForEach([BatteryState.unknown, .unplugged, .charging, .full], id: \.self) { value in

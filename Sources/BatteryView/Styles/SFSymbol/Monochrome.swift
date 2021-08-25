@@ -20,6 +20,10 @@ public struct Monochrome: ColorConfiguration {
     }
     
     public func secondary(for configuration: BatteryStyleConfiguration) -> Color {
+        if configuration.state == .unknown {
+            return .primary.opacity(0.5)
+        }
+        
         switch configuration.mode {
         case .normal:
             return .primary

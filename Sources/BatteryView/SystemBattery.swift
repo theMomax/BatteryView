@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+#if os(iOS)
 public struct SystemBattery: BatteryView {
     private static var defaultStyle: AnyBatteryStyle = AnyBatteryStyle(SFSymbolStyle())
     
@@ -47,3 +48,4 @@ public struct SystemBattery: BatteryView {
         loadData()
     }
 }
+#endif
