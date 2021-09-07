@@ -1,8 +1,8 @@
 //
-//  SFSymbolStyle.swift
-//  
+//  SFSymbolWideStyle.swift
 //
-//  Created by Max Obermeier on 12.05.21.
+//
+//  Created by Max Obermeier on 07.09.21.
 //
 
 import SwiftUI
@@ -10,14 +10,14 @@ import SwiftUI
 /// A ``BatteryStyle`` that closely resembles battery-icons available in the SF Symbols icon set, but `state` and
 /// `mode` are indicated using colors.
 ///
-/// - Warning: This style is not compatible with WidgetKit as it uses SwiftUI modifiers that do not work when used in
-/// a widget.
-public struct SFSymbolStyle: BatteryStyle {
+/// - Note: This style is a lot simpler than ``SFSymbolStyle`` and does not make use of masking. Thus is can be used
+/// in combination with WidgetKit, which is currently not possible with ``SFSymbolStyle``.
+public struct SFSymbolWideStyle: BatteryStyle {
     private let color: ColorConfiguration
     
     private let animation: Animation?
     
-    /// Initialize a ``SFSymbolStyle`` using the given configuration options.
+    /// Initialize a ``SFSymbolWideStyle`` using the given configuration options.
     ///
     /// - Parameters:
     ///     -  ``warningLevel``: below this battery level, the color changes to red
@@ -39,31 +39,27 @@ public struct SFSymbolStyle: BatteryStyle {
     }
     
     func innerBody(configuration: Configuration, w: CGFloat) -> some View {
-        ZStack(alignment: .leading) {
-            Image(systemName: "battery.0")
-                .font(Font.custom("SFUIDisplay-Light", size: 200 * (w/294)))
-                .foregroundColor(color.tertiary(for: configuration))
-            RoundedRectangle(cornerRadius: w * 0.040, style: .continuous)
-                .frame(width: CGFloat(Float(w) * 0.688 * configuration.level), height: w * 0.276, alignment:  .leading)
-                .foregroundColor(color.secondary(for: configuration))
-                .animation(animation)
-                .offset(x: w * 0.18)
-        }
-        .mask(
-            ZStack {
-                Color.white
-                Image(systemName: "battery.100").font(Font.custom("SFUIDisplay-Light", size: 200 * (w/294)))
-                    .foregroundColor(.black)
+        HStack(spacing: 0) {
+            ZStack(alignment: .leading) {
+                Image(systemName: "battery.0")
+                    .font(Font.custom("SFUIDisplay-Light", size: 200 * (w/294)))
+                    .foregroundColor(color.tertiary(for: configuration))
+                RoundedRectangle(cornerRadius: w * 0.040, style: .continuous)
+                    .frame(width: CGFloat(Float(w) * 0.68 * configuration.level), height: w * 0.276, alignment:  .leading)
+                    .foregroundColor(color.secondary(for: configuration))
+                    .animation(animation)
+                    .offset(x: w * 0.18)
             }
-            .compositingGroup()
-            .colorInvert()
-            .luminanceToAlpha()
-        )
-        .withBolt(if: configuration.state == .charging || configuration.state == .full, sized: w, colored: color.primary(for: configuration))
+            if configuration.state == .charging || configuration.state == .full {
+                Image(systemName: "bolt.fill")
+                    .font(Font.custom("SFUIDisplay-Light", size: 120 * (w/294)))
+                    .foregroundColor(color.primary(for: configuration))
+            }
+        }
     }
 }
 
-struct SFSymbolStyle_Previews: PreviewProvider {
+struct SFSymbolWideStyle_Previews: PreviewProvider {
         
     static let opacity = 1.0
     
@@ -71,14 +67,14 @@ struct SFSymbolStyle_Previews: PreviewProvider {
         Group {
             BatteryDemo()
                 .background(Color.white)
-        }.batteryStyle(SFSymbolStyle())
+        }.batteryStyle(SFSymbolWideStyle())
         .preferredColorScheme(.light)
         
         
         Group {
             BatteryDemo()
                 .background(Color.black)
-        }.batteryStyle(SFSymbolStyle())
+        }.batteryStyle(SFSymbolWideStyle())
         .preferredColorScheme(.dark)
         Group {
             VStack {
@@ -87,14 +83,14 @@ struct SFSymbolStyle_Previews: PreviewProvider {
                 }
 
             }
-        }.batteryStyle(SFSymbolStyle())
+        }.batteryStyle(SFSymbolWideStyle())
         Group {
             ScrollView {
                 ForEach(1..<10) { i in
                     Self.instance(width: 294/pow(CGFloat(1.5), CGFloat(i)), height: 200/pow(CGFloat(1.5), CGFloat(i)), withOverlay: false)
                 }
             }
-        }.batteryStyle(SFSymbolStyle())
+        }.batteryStyle(SFSymbolWideStyle())
         Group {
             VStack {
                 ForEach(1..<8) { i in
@@ -102,14 +98,14 @@ struct SFSymbolStyle_Previews: PreviewProvider {
                 }
 
             }
-        }.batteryStyle(SFSymbolStyle())
+        }.batteryStyle(SFSymbolWideStyle())
         Group {
             ScrollView {
                 ForEach(1..<10) { i in
                     Self.instance(width: 294/pow(CGFloat(1.5), CGFloat(i)), height: 200/pow(CGFloat(1.5), CGFloat(i)), withOverlay: true)
                 }
             }
-        }.batteryStyle(SFSymbolStyle())
+        }.batteryStyle(SFSymbolWideStyle())
         Group {
             VStack {
                 ForEach(1..<8) { i in
@@ -117,14 +113,14 @@ struct SFSymbolStyle_Previews: PreviewProvider {
                 }
 
             }
-        }.batteryStyle(SFSymbolStyle())
+        }.batteryStyle(SFSymbolWideStyle())
         Group {
             ScrollView {
                 ForEach(1..<10) { i in
                     Self.instance(width: 600/pow(CGFloat(1.5), CGFloat(i)), height: 200/pow(CGFloat(1.5), CGFloat(i)), withOverlay: true)
                 }
             }
-        }.batteryStyle(SFSymbolStyle())
+        }.batteryStyle(SFSymbolWideStyle())
     }
     
     static func instance(width: CGFloat, height: CGFloat, withOverlay: Bool = false) -> some View {
@@ -141,3 +137,4 @@ struct SFSymbolStyle_Previews: PreviewProvider {
         }
     }
 }
+
